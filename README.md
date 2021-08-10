@@ -1,6 +1,14 @@
 # wakatime-sync
 
 ## 数据库准备
+Create a MySQL database
+
+   ```mysql
+   create database wakatime_db;
+   create user 'wakatime_admin'@'%' identified by 'wakatime_admin_password';
+   grant all on wakatime_db.* to 'wakatime_admin'@'%';
+   ```
+
 建好MySQL数据库后后，按序号顺序依次执行`sql`目录下的sql脚本
 
 ## 参数说明：
