@@ -1,18 +1,25 @@
-FROM openjdk:8-jdk-alpine as builder
-MAINTAINER wf2311 "wf2311@163.com"
-WORKDIR application
-COPY target/*.jar application.jar
-#COPY bin/docker-startup.sh bin/startup.sh
+#
+# Build stage
+#
+FROM maven:3.6.0-jdk-11-slim AS build
+WORKDIR /application
+COPY ./pom.xml ./pom.xml
+# fetch all dependencies
+RUN mvn dependency:go-offline -B
+COPY src src
+COPY ./.layers.xml ./.layers.xml
+RUN mvn -f ./pom.xml clean package
+RUN cp ./target/*.jar application.jar
 RUN java -Djarmode=layertools -jar application.jar extract
 
-FROM openjdk:8-jdk-alpine
-MAINTAINER wf2311 "wf2311@163.com"
+
+FROM openjdk:11-jre-slim
 WORKDIR application
-COPY --from=builder /application/dependencies/ ./
-COPY --from=builder /application/snapshot-dependencies/ ./
-COPY --from=builder /application/spring-boot-loader/ ./
-COPY --from=builder /application/wf2311-dependencies/ ./
-COPY --from=builder /application/application/ ./
+COPY --from=build /application/dependencies/ ./
+COPY --from=build /application/snapshot-dependencies/ ./
+COPY --from=build /application/spring-boot-loader/ ./
+COPY --from=build /application/wf2311-dependencies/ ./
+COPY --from=build /application/application/ ./
 ADD bin/docker-startup.sh bin/startup.sh
 
 ENV JVM_OPTS '-Xmx256m -Xms64m -Xss256k'
