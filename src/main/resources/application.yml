@@ -25,7 +25,7 @@ spring:
     password: ${MYSQL_PASSWORD}
     username: ${MYSQL_USERNAME}
     hikari:
-      maximum-pool-size: 5
+      maximum-pool-size: 3
       allow-pool-suspension: true
     driver-class-name: com.mysql.cj.jdbc.Driver
   profiles:
