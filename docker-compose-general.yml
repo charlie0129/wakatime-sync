@@ -4,15 +4,20 @@ services:
     build: .
     container_name: wakatime-sync
     restart: unless-stopped
-    environment:
-      - "JAVA_OPTS=-Xmx256m -Xms64m -Xss256k"
-      - "SERVER_PORT=${SERVER_PORT}"
-      - "WAKATIME_APP_KEY=${WAKATIME_APP_KEY}"
-      - "WAKATIME_PROXY_URL=${WAKATIME_PROXY_URL}"
-      - "START_DAY=${START_DAY}"
-      - "MYSQL_URL=jdbc:mysql://${MYSQL_HOST}/wakatime_db?characterEncoding=utf8&useUnicode=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=PRC"
-      - "MYSQL_USERNAME=${MYSQL_USERNAME}"
-      - "MYSQL_PASSWORD=${MYSQL_PASSWORD}"
+    command:
+      - "-Xmx256m"
+      - "-Xms64m" 
+      - "-Xss256k"
+      - "-Dspring.datasource.url=jdbc:mysql://${MYSQL_HOST}/${MYSQL_DATABASE}?characterEncoding=utf8&useUnicode=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=PRC"
+      - "-Dspring.datasource.username=${MYSQL_USERNAME}"
+      - "-Dspring.datasource.password=${MYSQL_PASSWORD}"
+      - "-Dwakatime.secret-api-key=${WAKATIME_APP_KEY}"
+      - "-Dwakatime.proxy-url=${WAKATIME_PROXY_URL}"
+      - "-Dwakatime.start-day=${START_DAY}"
+      - "-Dwakatime.ftqq-key=${WAKATIME_FTQQ_KEY}"
+      - "-Dwakatime.dingding-key=${WAKATIME_DINGDING_KEY}"
+      - "-Dserver.port=${SERVER_PORT}"
+      - "org.springframework.boot.loader.JarLauncher"
     volumes:
       - "./logs:/application/logs"
       - "${HOME}/.m2:/root/.m2"
