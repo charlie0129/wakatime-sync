@@ -21,7 +21,7 @@ services:
     volumes:
       - "./logs:/application/logs"
       - "${HOME}/.m2:/root/.m2"
-    expose:
+    ports:
       - "3040:3040"
     extra_hosts:
       - "host.docker.internal:host-gateway"
